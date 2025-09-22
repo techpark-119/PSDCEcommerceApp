@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 
 interface LoginFormData {
     email: string;
@@ -11,7 +11,9 @@ const DUMMY_EMAIL = "user@example.com";
 const DUMMY_PASSWORD = "password123";
 
 const Login: React.FC = () => {
-    const { login } = useAuth();
+    const authContext = useContext(AuthContext);
+    const login = authContext?.login;
+    const user = authContext?.user;
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState<LoginFormData>({
@@ -21,6 +23,13 @@ const Login: React.FC = () => {
 
     const [errors, setErrors] = useState<Partial<LoginFormData>>({});
     const [authError, setAuthError] = useState<string>("");
+    
+
+    useEffect(() => {
+        if (user) {
+            navigate("/");
+        }
+    }, [user, navigate]);
 
     const validate = () => {
         const newErrors: Partial<LoginFormData> = {};
@@ -40,18 +49,17 @@ const Login: React.FC = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-        setAuthError(""); // clear auth error on change
+        setAuthError("");
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
         if (validate()) {
             if (
                 formData.email === DUMMY_EMAIL &&
                 formData.password === DUMMY_PASSWORD
             ) {
-                login();
+                if (login) login();
                 navigate('/');
             } else {
                 setAuthError("Invalid email or password.");
@@ -66,7 +74,7 @@ const Login: React.FC = () => {
                 <div className="sm:mx-auto sm:w-full sm:max-w-md">
                     <img
                         className="mx-auto h-10 w-auto"
-                        src="https://baitussalam.org/images/logo-2.svg"
+                        src="https://baitussalam.org/images/logo.svg"
                         alt="Baitussalam"
                     />
                     <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">

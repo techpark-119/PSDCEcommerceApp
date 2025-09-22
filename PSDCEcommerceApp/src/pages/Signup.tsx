@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 interface SignupFormData {
     name: string;
@@ -9,7 +10,15 @@ interface SignupFormData {
 }
 
 const Signup: React.FC = () => {
+    const authContext = useContext(AuthContext);
+    const user = authContext?.user;
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user) {
+            navigate('/');
+        }
+    }, [user, navigate]);
 
     const [formData, setFormData] = useState<SignupFormData>({
         name: '',
@@ -19,6 +28,7 @@ const Signup: React.FC = () => {
     });
 
     const [errors, setErrors] = useState<Partial<SignupFormData>>({});
+    const [loading, setLoading] = useState(false); // <-- loading state
 
     const validate = () => {
         const newErrors: Partial<SignupFormData> = {};
@@ -51,7 +61,12 @@ const Signup: React.FC = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (validate()) {
-            navigate('/');
+            setLoading(true);
+            // Simulate async signup
+            setTimeout(() => {
+                setLoading(false);
+                navigate('/');
+            }, 1500);
         }
     };
 
@@ -61,7 +76,7 @@ const Signup: React.FC = () => {
                 <div className="sm:mx-auto sm:w-full sm:max-w-md">
                     <img
                         className="mx-auto h-10 w-auto"
-                        src="https://baitussalam.org/images/logo-2.svg"
+                        src="https://baitussalam.org/images/logo.svg"
                         alt="Baitussalam"
                     />
                     <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
@@ -85,6 +100,7 @@ const Signup: React.FC = () => {
                                     value={formData.name}
                                     onChange={handleChange}
                                     className="block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    disabled={loading}
                                 />
                                 {errors.name && <p className="text-sm text-red-600 mt-1">{errors.name}</p>}
                             </div>
@@ -104,6 +120,7 @@ const Signup: React.FC = () => {
                                     value={formData.email}
                                     onChange={handleChange}
                                     className="block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    disabled={loading}
                                 />
                                 {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email}</p>}
                             </div>
@@ -123,6 +140,7 @@ const Signup: React.FC = () => {
                                     value={formData.password}
                                     onChange={handleChange}
                                     className="block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    disabled={loading}
                                 />
                                 {errors.password && <p className="text-sm text-red-600 mt-1">{errors.password}</p>}
                             </div>
@@ -142,6 +160,7 @@ const Signup: React.FC = () => {
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
                                     className="block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    disabled={loading}
                                 />
                                 {errors.confirmPassword && (
                                     <p className="text-sm text-red-600 mt-1">{errors.confirmPassword}</p>
@@ -152,9 +171,38 @@ const Signup: React.FC = () => {
                         <div>
                             <button
                                 type="submit"
-                                className="flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className={`flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 items-center ${
+                                    loading ? 'opacity-70 cursor-not-allowed' : ''
+                                }`}
+                                disabled={loading}
                             >
-                                Sign up
+                                {loading ? (
+                                    <>
+                                        <svg
+                                            className="animate-spin h-5 w-5 mr-2 text-white"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                            ></circle>
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                            ></path>
+                                        </svg>
+                                        Signing up...
+                                    </>
+                                ) : (
+                                    'Sign up'
+                                )}
                             </button>
                         </div>
                     </form>

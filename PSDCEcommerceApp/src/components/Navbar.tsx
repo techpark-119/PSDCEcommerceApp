@@ -12,11 +12,11 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="flex flex-wrap items-center justify-between bg-gray-600 px-6 py-3">
-                <div className="mr-6 flex flex-shrink-0 items-center text-white">
+            <nav className="flex flex-wrap items-center justify-evenly bg-gray-600 px-6 py-3">
+                <div className="mr-6 flex flex-shrink-0 items-center text-white hover:cursor-pointer">
                     <img
-                        className="mx-auto h-10 w-auto"
-                        src="https://baitussalam.org/images/logo-2.svg"
+                        className="mx-auto h-14 w-auto"
+                        src="https://baitussalam.org/images/logo.svg"
                         alt="Baitussalam"
                     />
                 </div>
@@ -67,7 +67,7 @@ const Navbar = () => {
                     </div>
                     <div>
                         {isLoggedIn && (
-                            <button onClick={handleLogout} className="mt-4 inline-block rounded border border-gray-400 px-4 py-2 text-sm leading-none text-gray-300 hover:bg-gray-300 hover:text-gray-800 lg:mt-0">
+                            <button onClick={handleLogout} className="mt-4 inline-block rounded border border-gray-400 px-4 py-2 text-sm leading-none text-gray-300 hover:cursor-pointer hover:bg-gray-300 hover:text-gray-800 lg:mt-0">
                                 Logout
                             </button>
                         )}

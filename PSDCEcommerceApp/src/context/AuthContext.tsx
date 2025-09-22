@@ -3,29 +3,32 @@ import type { ReactNode } from "react";
 
 interface AuthContextType {
   isLoggedIn: boolean;
+  user: any;
   login: () => void;
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
     !!localStorage.getItem("isLoggedIn")
   );
-
-  const login = () => {
+  const [user, setUser] = useState<any>(null);
+  const login = (userData: any = null) => {
     localStorage.setItem("isLoggedIn", "true");
     setIsLoggedIn(true);
+    setUser(userData);
   };
 
   const logout = () => {
     localStorage.removeItem("isLoggedIn");
     setIsLoggedIn(false);
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

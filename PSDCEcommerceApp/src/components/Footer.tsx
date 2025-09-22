@@ -32,7 +32,7 @@ const Footer = () => {
                                 target="_blank"
                                 className="text-white"
                             >
-                                Arham Ali{" "}
+                            Arham Ali{" "}
                             </a>
                             in Karachi
                         </span>
